@@ -1,8 +1,9 @@
 <template>
-  <form class="flex flex-col mt-3">
+  <form @submit.prevent="addProduct" class="flex flex-col mt-3">
     <div class="flex h-12">
       <input
         type="text"
+        v-model="product"
         required
         class="
           flex-grow
@@ -16,7 +17,7 @@
           text-lg
         "
       />
-      <img
+      <button
         class="
           bg-blue-500
           w-12
@@ -28,15 +29,18 @@
           cursor-pointer
           rounded-tl-full rounded-tr-full
         "
-        src="@/assets/img/airplane.svg"
-        alt="airplane"
-      />
+        type="submit"
+        @submit.prevent="addProduct"
+      >
+        <img src="@/assets/img/airplane.svg" alt="airplane" />
+      </button>
     </div>
     <div class="p-3">
       <label for="supermarket" class="pr-3 font-bold text-lg">Supermercado:</label>
       <select
         name="supermarket"
         id="supermarket"
+        v-model="supermarket"
         class="py-3 px-4 rounded-full text-lg bg-blue-500 text-white outline-none"
       >
         <option value="any">Cualquiera</option>
@@ -52,8 +56,38 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+import { db } from '@/firebase.js'
+
 export default {
   name: 'AddProduct',
+  props: {
+    user: {
+      type: [Object, null],
+    },
+  },
+  setup(props) {
+    let product = ref('')
+    let supermarket = ref('any')
+
+    const addProduct = async () => {
+      try {
+        await db.collection('products').add({
+          product: product.value,
+          supermarket: supermarket.value,
+          user: props.user.uid,
+          userName: props.user.displayName,
+          createdAt: Date.now(),
+        })
+
+        product.value = ''
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    return { product, supermarket, addProduct }
+  },
 }
 </script>
 

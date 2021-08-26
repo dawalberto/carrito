@@ -11,7 +11,7 @@
       </p>
     </div>
     <!-- Add product -->
-    <AddProduct />
+    <AddProduct :user="user" />
     <!-- Products -->
     <div>
       <Product />
