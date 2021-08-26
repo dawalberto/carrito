@@ -13,22 +13,28 @@
     <!-- Add product -->
     <AddProduct :user="user" />
     <!-- Products -->
-    <div>
-      <Product />
-    </div>
+    <transition-group name="list-complete">
+      <Product
+        v-for="product in products"
+        :key="product.id"
+        :product="product"
+        class="product"
+      />
+    </transition-group>
   </div>
 </template>
 
 <script>
 import AddProduct from '@/components/AddProduct.vue'
 import Product from '@/components/Product.vue'
-import { firebase, auth } from '@/firebase.js'
+import { firebase, auth, db } from '@/firebase.js'
 import { ref } from 'vue'
 
 export default {
   name: 'App',
   components: { AddProduct, Product },
   setup() {
+    // User
     let user = ref(null)
 
     auth.onAuthStateChanged(async (auth) => {
@@ -57,9 +63,48 @@ export default {
       }
     }
 
-    return { doLogin, doLogout, user }
+    // Product
+    let products = ref([])
+    db.collection('products')
+      .orderBy('bought', 'asc')
+      .onSnapshot(
+        (snapshot) => {
+          const newProducts = []
+          snapshot.docs.forEach((doc) => {
+            let { product, user, userName, createdAt, supermarket, bought } = doc.data()
+            let id = doc.id
+            newProducts.push({
+              id,
+              product,
+              user,
+              userName,
+              createdAt,
+              supermarket,
+              bought,
+            })
+            products.value = newProducts
+          })
+        },
+        (error) => console.log(error),
+      )
+
+    return { doLogin, doLogout, user, products }
   },
 }
 </script>
 
-<style></style>
+<style>
+.list-complete-enter-from,
+.list-complete-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.list-complete-leave-active {
+  position: absolute;
+}
+
+.product {
+  transition: all 0.8s ease;
+}
+</style>

@@ -78,6 +78,7 @@ export default {
           user: props.user.uid,
           userName: props.user.displayName,
           createdAt: Date.now(),
+          bought: false,
         })
 
         product.value = ''
