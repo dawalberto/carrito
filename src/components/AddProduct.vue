@@ -71,6 +71,10 @@ export default {
     let supermarket = ref('any')
 
     const addProduct = async () => {
+      if (!props.user) {
+        alert('Por favor inicia sesión para poder agregar productos')
+        return
+      }
       try {
         await db.collection('products').add({
           product: product.value,

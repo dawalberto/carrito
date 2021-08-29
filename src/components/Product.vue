@@ -1,12 +1,13 @@
 <template>
   <div
-    @dblclick="removeIdea"
+    @dblclick="removeProduct"
     class="flex items-center p-3 mt-1 border bg-blue-200 rounded-2xl"
     :class="{ 'opacity-60': product.bought }"
   >
     <input
       type="checkbox"
       @click="selectDeselectProduct"
+      :disabled="!user"
       :checked="product.bought"
       name="bought"
       id="bought"
@@ -34,6 +35,9 @@ export default {
       type: Object,
       required: true,
     },
+    user: {
+      type: [Object, null],
+    },
   },
   setup(props) {
     const srcImg = () => {
@@ -43,6 +47,9 @@ export default {
     }
 
     const selectDeselectProduct = () => {
+      if (!props.user) {
+        return
+      }
       try {
         db.collection('products').doc(props.product.id).update({
           bought: !props.product.bought,
@@ -52,8 +59,11 @@ export default {
       }
     }
 
-    const removeIdea = async () => {
+    const removeProduct = async () => {
       try {
+        if (!props.user) {
+          return
+        }
         if (
           !confirm(
             `¿Quieres eliminar el producto '${props.product.product}' de la lista?`,
@@ -67,7 +77,7 @@ export default {
       }
     }
 
-    return { srcImg, selectDeselectProduct, removeIdea }
+    return { srcImg, selectDeselectProduct, removeProduct }
   },
 }
 </script>

@@ -18,6 +18,7 @@
         v-for="product in products"
         :key="product.id"
         :product="product"
+        :user="user"
         class="product"
       />
     </transition-group>
@@ -96,6 +97,10 @@ export default {
 
     const removeAllProducts = async () => {
       try {
+        if (!user.value) {
+          return
+        }
+
         if (!confirm(`¿Deseas eliminar todos los productos de la lista?`)) {
           return
         }
@@ -104,7 +109,6 @@ export default {
         products.forEach(async (product) => {
           await db.collection('products').doc(product.id).delete()
         })
-        location.reload()
       } catch (error) {
         console.log(error)
       }
