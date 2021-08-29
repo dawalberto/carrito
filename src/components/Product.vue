@@ -1,5 +1,6 @@
 <template>
   <div
+    @dblclick="removeIdea"
     class="flex items-center p-3 mt-1 border bg-blue-200 rounded-2xl"
     :class="{ 'opacity-60': product.bought }"
   >
@@ -51,7 +52,22 @@ export default {
       }
     }
 
-    return { srcImg, selectDeselectProduct }
+    const removeIdea = async () => {
+      try {
+        if (
+          !confirm(
+            `¿Quieres eliminar el producto '${props.product.product}' de la lista?`,
+          )
+        ) {
+          return
+        }
+        await db.collection('products').doc(props.product.id).delete()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    return { srcImg, selectDeselectProduct, removeIdea }
   },
 }
 </script>
