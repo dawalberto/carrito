@@ -21,6 +21,12 @@
         class="product"
       />
     </transition-group>
+    <div
+      @click="removeAllProducts"
+      class="w-12 p-2 fixed bottom-3 right-3 bg-blue-500 rounded-full cursor-pointer"
+    >
+      <img src="@/assets/img/clipboard-check.svg" alt="clear list" />
+    </div>
   </div>
 </template>
 
@@ -88,7 +94,23 @@ export default {
         (error) => console.log(error),
       )
 
-    return { doLogin, doLogout, user, products }
+    const removeAllProducts = async () => {
+      try {
+        if (!confirm(`¿Deseas eliminar todos los productos de la lista?`)) {
+          return
+        }
+
+        let products = await db.collection('products').get()
+        products.forEach(async (product) => {
+          await db.collection('products').doc(product.id).delete()
+        })
+        location.reload()
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    return { doLogin, doLogout, user, products, removeAllProducts }
   },
 }
 </script>

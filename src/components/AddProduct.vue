@@ -47,7 +47,7 @@
         <option value="mercadona">Mercadona</option>
         <option value="consum">Consum</option>
         <option value="aldi">Aldi</option>
-        <option value="famili-cash">Famili cash</option>
+        <option value="family-cash">Family cash</option>
         <option value="carrefour">Carrefour</option>
         <option value="lidl">Lidl</option>
       </select>
