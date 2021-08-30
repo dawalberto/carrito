@@ -109,6 +109,10 @@ export default {
         products.forEach(async (product) => {
           await db.collection('products').doc(product.id).delete()
         })
+
+        setTimeout(() => {
+          location.reload()
+        }, 1000)
       } catch (error) {
         console.log(error)
       }
