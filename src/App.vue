@@ -23,11 +23,20 @@
         class="product"
       />
     </transition-group>
-    <div
-      @click="removeAllProducts"
-      class="w-12 p-2 fixed bottom-3 right-3 bg-blue-500 rounded-full cursor-pointer"
-    >
-      <img src="@/assets/img/clipboard-check.svg" alt="clear list" />
+    <!-- Options -->
+    <div class="fixed bottom-3 right-3">
+      <div
+        @click="removeBoughtProducts"
+        class="w-12 p-2 bg-blue-500 rounded-full cursor-pointer"
+      >
+        <img src="@/assets/img/clipboard-list.svg" alt="remove bought products" />
+      </div>
+      <div
+        @click="removeAllProducts"
+        class="w-12 p-2 mt-3 bg-blue-500 rounded-full cursor-pointer"
+      >
+        <img src="@/assets/img/clipboard-check.svg" alt="remove all products" />
+      </div>
     </div>
   </div>
 </template>
@@ -44,7 +53,6 @@ export default {
   setup() {
     // User
     let user = ref(null)
-    let lastProductToRemove = false
 
     auth.onAuthStateChanged(async (auth) => {
       if (auth) {
@@ -114,7 +122,30 @@ export default {
 
         setTimeout(() => {
           location.reload()
-        }, 500)
+        }, 900)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const removeBoughtProducts = async () => {
+      try {
+        if (!user.value) {
+          return
+        }
+
+        if (!confirm(`¿Deseas eliminar todos los productos marcados como comprados?`)) {
+          return
+        }
+
+        let products = await db.collection('products').where('bought', '==', true).get()
+        products.forEach(async (product) => {
+          await db.collection('products').doc(product.id).delete()
+        })
+
+        setTimeout(() => {
+          location.reload()
+        }, 900)
       } catch (error) {
         console.log(error)
       }
@@ -122,17 +153,21 @@ export default {
 
     const removeProduct = () => {
       if (products.value.length === 1) {
-        if (!lastProductToRemove) {
-          lastProductToRemove = true
-          return
-        }
         setTimeout(() => {
           location.reload()
-        }, 500)
+        }, 200)
       }
     }
 
-    return { doLogin, doLogout, user, products, removeAllProducts, removeProduct }
+    return {
+      doLogin,
+      doLogout,
+      user,
+      products,
+      removeAllProducts,
+      removeBoughtProducts,
+      removeProduct,
+    }
   },
 }
 </script>

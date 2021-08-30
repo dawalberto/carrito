@@ -2,7 +2,7 @@
   <div
     @dblclick="removeProduct"
     class="flex items-center p-3 mt-1 border bg-blue-200 rounded-2xl"
-    :class="{ 'opacity-60': product.bought }"
+    :class="{ 'opacity-40': product.bought }"
   >
     <input
       type="checkbox"
