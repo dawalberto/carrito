@@ -19,6 +19,7 @@
         :key="product.id"
         :product="product"
         :user="user"
+        @remove-product="removeProduct"
         class="product"
       />
     </transition-group>
@@ -43,6 +44,7 @@ export default {
   setup() {
     // User
     let user = ref(null)
+    let lastProductToRemove = false
 
     auth.onAuthStateChanged(async (auth) => {
       if (auth) {
@@ -112,13 +114,25 @@ export default {
 
         setTimeout(() => {
           location.reload()
-        }, 1000)
+        }, 500)
       } catch (error) {
         console.log(error)
       }
     }
 
-    return { doLogin, doLogout, user, products, removeAllProducts }
+    const removeProduct = () => {
+      if (products.value.length === 1) {
+        if (!lastProductToRemove) {
+          lastProductToRemove = true
+          return
+        }
+        setTimeout(() => {
+          location.reload()
+        }, 500)
+      }
+    }
+
+    return { doLogin, doLogout, user, products, removeAllProducts, removeProduct }
   },
 }
 </script>

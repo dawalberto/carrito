@@ -39,7 +39,8 @@ export default {
       type: [Object, null],
     },
   },
-  setup(props) {
+  emits: ['remove-product'],
+  setup(props, { emit }) {
     const srcImg = () => {
       if (props.product.supermarket !== 'any') {
         return require(`@/assets/img/${props.product.supermarket}.png`)
@@ -72,6 +73,7 @@ export default {
           return
         }
         await db.collection('products').doc(props.product.id).delete()
+        emit('remove-product')
       } catch (error) {
         console.error(error)
       }
