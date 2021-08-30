@@ -19,7 +19,7 @@
       />
       <button
         class="
-          bg-green-500
+          bg-blue-500
           w-12
           h-full
           py-1
