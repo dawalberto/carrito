@@ -1,0 +1,19 @@
+{
+  "short_name": "Carrito",
+  "name": "Carrito",
+  "icons": [
+    {
+      "src": "./icons8-shopping-cart-32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "./icons8-shopping-cart-64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    }
+  ],
+  "start_url": "index.html?launcher=true",
+  "display": "standalone",
+  "orientation": "portrait"
+}
